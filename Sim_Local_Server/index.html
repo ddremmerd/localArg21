@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <script src="jquery.js"></script> -->
+    <script src="script.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Smart Farm</title>
+</head>
+
+
+<body onload="OnLoad_Init(); upd_UITime();">
+
+    <div class="row">
+
+        <div class="header" id="myHeader">
+            <div style="color: white; font-size: small;" id="seconds_1"></div>
+        </div>
+        <!-- Modal for alert mesg -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="col-sm-12 col-s-12 col-12">
+                    <div class="col-sm-11 col-s-11 col-11">
+                        <p id="errorMesg"></p>
+                    </div>
+                    <div class="col-sm-1 col-s-1 col-1">
+                        <span class="close" onclick="CloseModal()">&times;</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal for Alert Notification -->
+        <div id="alert_modal" class="modal">
+            <div class="modal-content">
+                <div class="row margin-top40">
+                    <p id="errorMesg_1"></p>
+                    <div class="col-sm-6 col-s-6 col-6 margin-top20" style="padding-right: 1vw;">
+                        <button style="width: 100%" onclick="CloseConfirmModal('notify_modal')"
+                            class="button-green-line">ยกเลิก</button>
+                    </div>
+                    <div class="col-sm-6 col-s-6 col-6 margin-top20" style="padding-left: 1vw;">
+                        <button style="width: 100%" onclick="PostMode('manual')" class="button-green">ตกลง</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Confirm Modal  -->
+        <div id="confirm_modal" class="modal">
+            <div class="modal-content">
+                <div class="row margin-top40">
+                    <p>ปิดปั๊มและวาล์วทั้งหมด</p>
+                    <div class="col-sm-6 col-s-6 col-6 margin-top20" style="padding-right: 1vw;">
+                        <button style="width: 100%" onclick="CloseConfirmModal()"
+                            class="button-green-line">ยกเลิก</button>
+                    </div>
+                    <div class="col-sm-6 col-s-6 col-6 margin-top20" style="padding-left: 1vw;">
+                        <button style="width: 100%" onclick="PostMode('manual')" class="button-green">ตกลง</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div id="backMenu">
+            <div class="tab">
+                <div class="col-sm-7 col-s-7 col-3">
+                    <button id="button_backZone" class="back-button" style="border-top: none;">
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- three tab display -->
+        <div id="allTab" class="tab">
+            <div class="col-sm-4 col-s-4 col-4">
+                <button id="tab_setTimer" class="tablinks" onclick="setTabPage('setTimer')">คำสั่งรดน้ำ</button>
+            </div>
+            <div class="col-sm-4 col-s-4 col-4" style="border-left: 7px solid white; border-right: 7px solid white;">
+                <button id="tab_editZone" class="tablinks" onclick="setTabPage('editZone')">จัดการอุปกรณ์</button>
+            </div>
+            <div class="col-sm-4 col-s-4 col-4">
+                <button id="tab_editWifi" class="tablinks" onclick="setTabPage('editWifi');">ตั้งค่าบอร์ด</button>
+            </div>
+        </div>
+
+
+
+        <div class="content">
+
+
+            <!-- loader animation for retriveing data -->
+            <div id="loderr" style="text-align: center;">
+
+                <div class="loader"></div>
+                <div class="text-loader">กำลังโหลดข้อมูล</div>
+            </div>
+
+            <!-- date and time setting program page -->
+            <div id="timer_setting" class="row">
+                <p id="topic_time"></p>
+                <div class="background-timer-up ">
+                    <div class="row">
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2">
+                            <div id="PrevArrowHour" class="arrow triangle-up" onclick=" HourPrevArrow()">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-s-2 col-2">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2">
+                            <div id="PrevArrowMinute" class="arrow triangle-up" onclick=" MinutePrevArrow()">
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                    </div>
+
+                    <div class="row timer-border">
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2">
+                            <p id="HourDisplay1" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-2 col-s-2 col-2">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2 ">
+                            <p id="MinuteDisplay1" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3 col-s-3 col-3 ">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2">
+                            <p id="HourDisplay2" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-2 col-s-2 col-2">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2 ">
+                            <p id="MinuteDisplay2" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-s-3 col-3 picked-number">&nbsp;</div>
+                    <div class="col-sm-2 col-s-2 col-2">
+                        <p id="HourDisplay3" class="picked-number "></p>
+                    </div>
+                    <div class="col-sm-2 col-s-2 col-2 picked-number">:</div>
+                    <div class="col-sm-2 col-s-2 col-2">
+                        <p id="MinuteDisplay3" class="picked-number "></p>
+                    </div>
+                    <div class="col-sm-3 col-s-3 col-3 picked-number">&nbsp;</div>
+                </div>
+                <div class="background-timer-down ">
+                    <div class="row timer-border">
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2">
+                            <p id="HourDisplay4" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-2 col-s-2 col-2">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2 ">
+                            <p id="MinuteDisplay4" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2">
+                            <p id="HourDisplay5" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-2 col-s-2 col-2">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2 ">
+                            <p id="MinuteDisplay5" class="list-number"></p>
+                        </div>
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2" style="padding-top: 1vh;">
+                            <div id="NextArrowHour" class="arrow triangle-down height-arrow" onclick=" HourNextArrow()">
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-s-2 col-2">&nbsp;</div>
+                        <div class="col-sm-2 col-s-2 col-2" style="padding-top: 1vh;">
+                            <div id="NextArrowMinute" class="arrow triangle-down" onclick=" MinuteNextArrow()"> </div>
+                        </div>
+                        <div class="col-sm-3 col-s-3 col-3">&nbsp;</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- tab1-1: timer main page -->
+            <div id="setTimer" class="tabcontent">
+                <div style="padding: 0 12px 0 12px">
+                    <div id="timer_part1">
+                        <div id="buttonTimerTab" class="button-area">
+                            <div class="col-sm-4 col-s-3 col-2">
+                                <button id="button-green" class="button-green-line"
+                                    onclick="EditButtonForDelete()">ลบคำสั่ง</button>
+                            </div>
+                            <div class="col-sm-6 col-s-7 col-9">&nbsp;</div>
+                            <div class="col-sm-2 col-s-2 col-1 right">
+                                <button id="addTimer" class="addTimer" style="width: 90%;"
+                                    onclick="AddButton(); ">&#43;</button>
+                            </div>
+                        </div>
+
+                        <div id="OnlyShowProgramTab" class="button-area">
+                            <div class="col-sm-8 col-s-9 col-9">&nbsp;</div>
+                            <div class="col-sm-4 col-s-3 col-2 right">
+                                <button id="button-green" class="button-green-line"
+                                    onclick="EditProgramButton()">แก้ไข</button>
+                            </div>
+
+
+                        </div>
+
+                        <!----------------------- show timer setting --------------------->
+
+                        <div class="timer-area">
+                            <div id="time_0"></div>
+                            <div id="time_1"></div>
+                            <div id="time_2"></div>
+                            <div id="time_3"></div>
+                            <div id="time_4"></div>
+                            <div id="time_5"></div>
+                            <div id="time_6"></div>
+                            <div id="time_7"></div>
+                            <div id="time_8"></div>
+                            <div id="time_9"></div>
+                            <div id="time_10"></div>
+                            <div id="time_11"></div>
+                            <div id="time_12"></div>
+                            <div id="time_13"></div>
+                            <div id="time_14"></div>
+                            <div id="time_15"></div>
+                            <div id="time_16"></div>
+                            <div id="time_17"></div>
+                            <div id="time_18"></div>
+                            <div id="time_19"></div>
+                            <div id="time_20"></div>
+                            <div id="time_21"></div>
+                            <div id="time_22"></div>
+                            <div id="time_23"></div>
+                            <div id="time_24"></div>
+                            <div id="time_25"></div>
+                            <div id="time_26"></div>
+                            <div id="time_27"></div>
+                            <div id="time_28"></div>
+                            <div id="time_29"></div>
+                            <div id="time_30"></div>
+                            <div id="time_31"></div>
+                            <div id="time_32"></div>
+                            <div id="time_33"></div>
+                            <div id="time_34"></div>
+                            <div id="time_35"></div>
+                            <div id="time_36"></div>
+                            <div id="time_37"></div>
+                            <div id="time_38"></div>
+                            <div id="time_39"></div>
+                            <div id="time_40"></div>
+                            <div id="time_41"></div>
+                            <div id="time_42"></div>
+                            <div id="time_43"></div>
+                            <div id="time_44"></div>
+                            <div id="time_45"></div>
+                            <div id="time_46"></div>
+                            <div id="time_47"></div>
+                        </div>
+
+
+                        <button id="save_editProgram" class="addTimer" style="width: 100%;"
+                            onclick="SaveEditProgram()">บันทึกการแก้ไข</button>
+                    </div>
+
+
+                    <!-- tab1-2: clock page and date and time -->
+                    <div id="timer_part2">
+                        <div class="box-underline">
+                            <div class="row margin-top40">
+                                <div class="col-sm-6 col-s-6 col-6">เลือกโซน</div>
+                                <div class="col-sm-6 col-s-6 col-6">
+                                    <select id="ZoneList">
+                                        <option value="-1">โซน</option>
+                                        <option value="0">โซน 1</option>
+                                        <option value="1">โซน 2</option>
+                                        <option value="2">โซน 3</option>
+                                        <option value="3">โซน 4</option>
+                                        <option value="4">โซน 5</option>
+                                        <option value="5">โซน 6</option>
+                                        <option value="6">โซน 7</option>
+                                        <option value="7">โซน 8</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row margin-top40">
+                                <div class="col-sm-6 col-s-6 col-6">ระยะเวลารดน้ำ (นาที)</div>
+                                <div class="col-sm-6 col-s-6 col-6">
+                                    <input id="duration" type="number" placeholder="นาที">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="box-underline">
+                            <div class="row margin-top30">
+                                <div class="col-sm-12 col-s-12 col-12 repeat-topic">รดซ้ำ</div>
+                                <div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="everyday" onclick="ToggleEveryday()"
+                                            class="button-day">ทุกวัน</button>
+                                    </div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day7" onclick="ToggleDay('SetDataProg',6)"
+                                            class="button-day">อาทิตย์</button>
+                                    </div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day1" onclick="ToggleDay('SetDataProg',0)"
+                                            class="button-day">จันทร์</button>
+                                    </div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day2" onclick="ToggleDay('SetDataProg',1)"
+                                            class="button-day">อังคาร</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day3" onclick="ToggleDay('SetDataProg',2)"
+                                            class="button-day">พุธ</button>
+                                    </div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day4" onclick="ToggleDay('SetDataProg',3)"
+                                            class="button-day">พฤหัส</button>
+                                    </div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day5" onclick="ToggleDay('SetDataProg',4)"
+                                            class="button-day">ศุกร์</button>
+                                    </div>
+                                    <div class="col-sm-3 col-s-3 col-3 text-day">
+                                        <button id="day6" onclick="ToggleDay('SetDataProg',5)"
+                                            class="button-day">เสาร์</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="box-underline" style="border: none !important;">
+                            <div class="row margin-top40">
+
+                                <div class="col-sm-6 col-s-6 col-6" style="padding-right: 1vw;">
+                                    <button id="bt_cancelProgram" style="width: 100%" onclick="DisplayTimerPart1();"
+                                        class="button-green-line">ยกเลิก</button>
+                                </div>
+                                <div class="col-sm-6 col-s-6 col-6" style="padding-left: 1vw;">
+                                    <button id="bt_okProgram" style="width: 100%" class="button-green">บันทึก</button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- tab2: edit zone tab: main page -->
+
+            <div id="editZone" class="tabcontent">
+                <div id="zone_part1">
+                    <div class="timer-area">
+                        <p id="textEditzoneTab" style="padding: 0 12px 27px 12px">
+                            เปิดใช้งานอุปกรณ์รดน้ำที่ติดตั้งแล้ว
+                        </p>
+                        <div id="zone_0"></div>
+                        <div id="zone_1"></div>
+                        <div id="zone_2"></div>
+                        <div id="zone_3"></div>
+                        <div id="zone_4"></div>
+                        <div id="zone_5"></div>
+                        <div id="zone_6"></div>
+                        <div id="zone_7"></div>
+                        <div class="col-sm-12 col-s-12 col-12" style="padding:12px; padding-bottom: 40px;">
+                            <button id="bt_manualMode" onclick="OpenConfirmModal()" class="button-green-line"
+                                style="width: 100%;">ทดลองเปิดน้ำ ตรวจสอบการทำงาน</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- tab2-1: sub-page-pump and zone -->
+
+                <div id="zone_part2" class="tabcontent">
+                    <div style="padding: 0 12px 0 12px">
+                        ทดลองการทำงานของปั๊ม
+                        <p style="font-size: 17px;">กดเลือกปั๊มเพื่อจ่ายไฟทดสอบการทำงานของปั๊ม</p>
+                        <button id="pump_0" onclick="PumpControl('0')" class="manual-button manual-off">ปั๊ม</button>
+                    </div>
+
+                    <div style="padding: 0 12px 0 12px">
+                        ทดลองเปิดน้ำ
+                        <p style="font-size: 17px;">กดเลือกโซนที่ต้องการเปิดน้ำ และกดซ้ำเพื่อปิดน้ำ</p>
+                        <button id="valve_0" onclick="ValveControl('0', event)" class="manual-button">โซน 1</button>
+                        <button id="valve_1" onclick="ValveControl('1', event)" class="manual-button">โซน 2</button>
+                        <button id="valve_2" onclick="ValveControl('2', event)" class="manual-button">โซน 3</button>
+                        <button id="valve_3" onclick="ValveControl('3', event)" class="manual-button">โซน 4</button>
+                        <button id="valve_4" onclick="ValveControl('4', event)" class="manual-button">โซน 5</button>
+                        <button id="valve_5" onclick="ValveControl('5', event)" class="manual-button">โซน 6</button>
+                        <button id="valve_6" onclick="ValveControl('6', event)" class="manual-button">โซน 7</button>
+                        <button id="valve_7" onclick="ValveControl('7', event)" class="manual-button">โซน 8</button>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+
+            <!-- tab3: edit realtime clock and password -->
+
+            <div id="editWifi" class="tabcontent">
+                <div id="wifiContent">
+                    <div id="wifi_part1">
+
+                        <!-- retreived realtime clock part -->
+                        <div class="box-underline">
+                            <div class="row">
+                                <p>เวลานาฬิกาในบอร์ดปัจจุบัน</p>
+                                <div style="text-align: center; padding: 10px">
+                                    <p>วัน <span id="date_t3" style="font-weight: bold;"></span> เวลา <span id="hh_t3"
+                                            style="font-weight: bold;"></span>:<span id="mm_t3"
+                                            style="font-weight: bold;"></span> น.</p>
+                                    <button class="button-green-line" style="width: 100%;margin-top: 20px;"
+                                        onclick="DisplayEditDatetime()">แก้ไขเวลา</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- retreived password part -->
+                        <div class="box-underline">
+                            <div class="row">
+                                <p>Serial No.</p>
+                                <input id="serialNumber" class="input-container">
+
+                                <p style="margin-top: 80px;">รหัสผ่านปัจจุบัน</p>
+                                <input id="password" class="input-container">
+
+                            </div>
+                        </div>
+
+                        <!-- send new password -->
+                        <div class="box-underline" style="border: none !important">
+                            <div class="row margin-top30">
+                                <p>ตั้งรหัสผ่านใหม่</p>
+                                <input id="newpass" class="input-container" />
+
+                                <p style="font-size: 18px; color: #333333; margin-top: 80px;">
+                                    เมื่อบันทึกการแก้ไขรหัสผ่าน
+                                    อุปกรณ์จะตัดการเชื่อมต่อ
+                                    ผู้ใช้จะต้องเข้าสู่ระบบอีกครั้งด้วยรหัสผ่านใหม่</p>
+
+                                <button class="button-green-line" style="width: 100%;margin-top: 20px;"
+                                    onclick="SendNewPass()">บันทึกการแก้ไขรหัสผ่าน</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- setting realtime of board: page with clocksetting -->
+                    <div id="wifi_part2">
+
+                        <div id="date_setting">
+                            <div class="box-underline">
+                                <div class="row margin-top30">
+                                    <div class="col-sm-12 col-s-12 col-12 repeat-topic">วัน</div>
+                                    <div>
+
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day7" onclick="ToggleDay('EditRealTime',6,event)"
+                                                class="button-day">อาทิตย์</button>
+                                        </div>
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day1" onclick="ToggleDay('EditRealTime',0,event)"
+                                                class="button-day">จันทร์</button>
+                                        </div>
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day2" onclick="ToggleDay('EditRealTime',1,event)"
+                                                class="button-day">อังคาร</button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day3" onclick="ToggleDay('EditRealTime',2,event)"
+                                                class="button-day">พุธ</button>
+                                        </div>
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day4" onclick="ToggleDay('EditRealTime',3,event)"
+                                                class="button-day">พฤหัส</button>
+                                        </div>
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day5" onclick="ToggleDay('EditRealTime',4,event)"
+                                                class="button-day">ศุกร์</button>
+                                        </div>
+                                        <div class="col-sm-3 col-s-3 col-3 text-day">
+                                            <button id="setRT_day6" onclick="ToggleDay('EditRealTime',5,event)"
+                                                class="button-day">เสาร์</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="box-underline" style="border: none !important;">
+                            <div class="row margin-top40">
+
+                                <div class="col-sm-6 col-s-6 col-6" style="padding-right: 1vw;">
+                                    <button id="bt_cancelSetTime" style="width: 100%" onclick='setTabPage("editWifi");'
+                                        class="button-green-line">ยกเลิก</button>
+                                </div>
+                                <div class="col-sm-6 col-s-6 col-6" style="padding-left: 1vw;">
+                                    <button id="bt_confirmSetTime" style="width: 100%" class="button-green"
+                                        onclick="ConfirmSetTime();">บันทึก</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <div class="footer"></div>
+</body>
+
+</html>
